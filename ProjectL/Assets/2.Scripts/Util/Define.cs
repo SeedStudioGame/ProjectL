@@ -4,17 +4,16 @@ using UnityEngine;
 
 //공통으로 사용하는 자료구조 (Enum, Struct)를 쉽게 접근하기 위한 클래스
 
-public class Define : MonoBehaviour
+public class Define
 {
-    // Start is called before the first frame update
-    void Start()
+    public enum Attribute
     {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        fire,
+        wood,
+        water,
+        metal,
+        earth,
+        yang,
+        yin
     }
 }

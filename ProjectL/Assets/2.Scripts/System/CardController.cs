@@ -2,28 +2,18 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum Attribute
-{
-    fire,
-    wood,
-    water,
-    metal,
-    earth,
-    yang,
-    yin
-}
-
+[System.Serializable]
 class CardSet
-{   
+{
     public int id; // 카드 아이디
     public string name; // 카드 이름
     public string type; // 카드 타입
-    public Attribute attribute; // 카드 속성
+    public Define.Attribute attribute; // 카드 속성
     public string imageUrl; // 카드 이미지
     public string description; // 카드 설명
     public int value; // 카드 값
 
-    public CardSet(int id, string name, string type, Attribute attribute, string imageUrl, string description, int value)
+    public CardSet(int id, string name, string type, Define.Attribute attribute, string imageUrl, string description, int value)
     {
         this.id = id;
         this.name = name;
@@ -39,11 +29,12 @@ class CardSet
         this.id = 0;
         this.name = "";
         this.type = "";
-        this.attribute = Attribute.fire;
+        this.attribute = Define.Attribute.fire;
         this.imageUrl = "";
         this.description = "";
     }
 }
+
 
 
 public class CardController : MonoBehaviour
@@ -56,11 +47,10 @@ public class CardController : MonoBehaviour
     void Start()
     {
         // Load cards from json file
-        TextAsset jsonFile = Resources.Load<TextAsset>("cards");
-        string jsonString = jsonFile.text;
+        TextAsset jsonFile = Resources.Load<TextAsset>("Cards");
+        cardsInDeck = JsonUtility.FromJson<List<CardSet>>(jsonFile.text);
 
-        cardsInDeck = JsonUtility.FromJson<List<CardSet>>(jsonString);
-
+        Debug.Log(cardsInDeck.Count);
         // Shuffle cards
         Shuffle(cardsInDeck);
 
