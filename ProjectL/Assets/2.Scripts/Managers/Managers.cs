@@ -2,42 +2,36 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-//게임내의 모든 매니저를 컨트롤하기 위한 클래스
-
-public class Managers : ManagerBase
+public class Managers : MonoBehaviour
 {
-    public static GameManager _game;
-    public static SceneManager _scene;
-    public static ResourceManager _resource;
-    public static SoundManager _sound;
-    public static EventManager _event;
-
-    private void Awake()
-    {
-        Init();
-    }
-
-    public override void Init()
-    {
-        _scene = Init<SceneManager>();
-        _resource = Init<ResourceManager>();
-        _sound = Init<SoundManager>();
-        _game = Init<GameManager>();
-        _event = Init<EventManager>();
-
-        DontDestroyOnLoad(this.gameObject);
-    }
+    public static Managers Root;
+    public static EventManager Event;
+    public static GameManager Game;
+    public static InstanceManager Instance;
+    public static DataManager Data;
+    public static SceneManager Scene;
+    public static UIManager UI;
+    public static AudioManager Audio;
 
     private T Init<T>() where T : ManagerBase
     {
-        T manager = GetComponent<T>();
-
+        T manager = Util.GetOrAddComponent<T>(this.gameObject);
         if (manager == null)
         {
-            manager = gameObject.AddComponent<T>();
+            Debug.LogError("Can't Get Manager Component");
+            return null;
         }
         manager.Init();
-
         return manager;
+    }
+
+    public void Init()
+    {
+        Event = Init<EventManager>();
+        Game = Init<GameManager>();
+        Instance = Init<InstanceManager>();
+        Data = Init<DataManager>();
+        UI = Init<UIManager>();
+        Audio = Init<AudioManager>();
     }
 }

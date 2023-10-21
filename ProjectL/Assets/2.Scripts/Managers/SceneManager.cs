@@ -1,13 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+using SM = UnityEngine.SceneManagement.SceneManager;
 
-//씬 전환을 컨트롤하기 위한 클래스
+//씬 전환 기능을 담당하고 씬 정보를 갖고 있음
 
 public class SceneManager : ManagerBase
 {
-    public override void Init()
-    {
 
-    }
 }

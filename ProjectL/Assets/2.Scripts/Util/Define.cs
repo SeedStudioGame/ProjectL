@@ -2,19 +2,25 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-//공통으로 사용하는 자료구조 (Enum, Struct)를 쉽게 접근하기 위한 클래스
+//공통으로 사용하는 자료 (Enum, Struct, Const)를 쉽게 접근하기 위한 클래스
 
-public class Define : MonoBehaviour
+public class Define
 {
-    // Start is called before the first frame update
-    void Start()
+    public enum Attribute
     {
-        
+        fire,
+        wood,
+        water,
+        metal,
+        earth,
+        yang,
+        yin
     }
 
-    // Update is called once per frame
-    void Update()
+    public struct UIData
     {
-        
+        public string name;
+        public GameObject gameObject;
+        public UnityEngine.Object component;
     }
 }
