@@ -2,25 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-class Card
-{
-    public string name;
-    public int value;
-    public string type;
-
-    public GameObject cardObject;
-
-
-    public Card(string name, int value, string type)
-    {
-        this.name = name;
-        this.value = value;
-        this.type = type;
-
-        this.cardObject = new GameObject();
-    }
-}
-
 public class PlayerController : MonoBehaviour
 {
 
@@ -40,15 +21,6 @@ public class PlayerController : MonoBehaviour
     void Start()
     {
 
-
-        // Create a deck of cards
-        List<Card> deck = new List<Card>();
-
-        // Add cards to the deck
-        for(int i = 0; i<maxCardLength; i++)
-        {
-            deck.Add(new Card(null, 0, null)); // Add a NULL card to the deck
-        }
     }
 
     // Update is called once per frame
