@@ -7,7 +7,6 @@ public class BattleController : MonoBehaviour
     private BattlerBase _player;
     private BattlerBase[] _enemys;
     private int _enemyCount;
-
     private bool _isEndBattle, _isWin;
 
     [SerializeField]
@@ -20,7 +19,6 @@ public class BattleController : MonoBehaviour
         Ready, DeckSetting, Fight
     }
     private BattleState _state;
-    
 
     public void BattleInit(BattlerBase playerInfo, BattlerBase[] enemysInfo)
     {
@@ -28,6 +26,7 @@ public class BattleController : MonoBehaviour
 
         _player = playerInfo;
         _enemys = enemysInfo;
+
         _enemyCount = _enemys.Length;
 
         _isEndBattle = false;
@@ -39,6 +38,14 @@ public class BattleController : MonoBehaviour
 
     private void BattlerPosSet()
     {
+        _player = _player.GetComponent<BattlerBase>();
+        _player._transform.position = _playerPoint;
+
+        for(int i = 0; i < _enemyCount; i++)
+        {
+            _enemys[i] = _enemys[i].GetComponent<BattlerBase>();
+            _enemys[i]._transform.position = _enemyPoint[_enemyCount][i];
+        }
 
     }
 
