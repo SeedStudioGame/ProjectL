@@ -2,8 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-//°øÅëÀ¸·Î »ç¿ëÇÏ´Â ÀÚ·á (Enum, Struct, Const)¸¦ ½±°Ô Á¢±ÙÇÏ±â À§ÇÑ Å¬·¡½º
-
+//ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ã¼ï¿½ï¿½ï¿½ï¿½ È°ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½ enum, struct, constï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Õ´Ï´ï¿½.
 public class Define
 {
     public enum Attribute
@@ -22,5 +21,10 @@ public class Define
         public string name;
         public GameObject gameObject;
         public UnityEngine.Object component;
+    }
+
+    public enum Scene
+    {
+        Awake, Load, Title, Lobby
     }
 }
