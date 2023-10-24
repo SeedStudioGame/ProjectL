@@ -49,6 +49,7 @@ public class LoadScene : SceneBase
 
     protected override void OnLoad()
     {
+        Managers.UI.Clear();
         Managers.Scene.OnLoad();
         Managers.Scene.LoadScene();
     }

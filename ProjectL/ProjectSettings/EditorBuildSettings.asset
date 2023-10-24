@@ -5,7 +5,16 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 0
-    path: 
-    guid: 00000000000000000000000000000000
+  - enabled: 1
+    path: Assets/4.Scenes/Run/Awake.unity
+    guid: c2a0122fd8187114c9fe4560adface25
+  - enabled: 1
+    path: Assets/4.Scenes/Run/Load.unity
+    guid: dcda752e99d2044459729017b82bf177
+  - enabled: 1
+    path: Assets/4.Scenes/Run/Lobby.unity
+    guid: 63c73a817cd900445a34ba46adc7cd3a
+  - enabled: 1
+    path: Assets/4.Scenes/Run/Title.unity
+    guid: b33005adeef18da49922678b9f4424c8
   m_configObjects: {}
