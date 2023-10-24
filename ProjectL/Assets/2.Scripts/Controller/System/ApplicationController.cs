@@ -12,5 +12,12 @@ public class ApplicationController : MonoBehaviour
         Managers.Root = Util.GetOrAddComponent<Managers>(gameObject);
         Managers.Root.Init();
         DontDestroyOnLoad(gameObject);
+
+        EnterGame();
+    }
+
+    private void EnterGame()
+    {
+        Managers.Scene.LoadScene(Define.Scene.Title);
     }
 }
