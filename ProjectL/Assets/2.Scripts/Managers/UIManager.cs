@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
 //모든 UI를 저장하고 불러오기 편하게 하기 위한 용도. 각 씬의 컨트롤러에서 UI 추가
@@ -9,6 +8,8 @@ using UnityEngine;
 public class UIManager : ManagerBase
 {
     private Dictionary<Type, List<Define.UIData>> _uis = new Dictionary<Type, List<Define.UIData>>();
+
+    public void Clear() { _uis.Clear(); }
 
     public void AddUI<T>(string uiName, GameObject obj) where T : UnityEngine.Object
     {
@@ -95,6 +96,10 @@ public class UIManager : ManagerBase
         else
         { uiData.gameObject = Util.GetRoot(); }
 
+        if(uiData.gameObject == null)
+        {
+            Debug.LogError("Can't Find Object");
+        }
         uiData.name = uiName;
         uiData.component = uiData.gameObject.GetComponent<T>();
         return uiData;

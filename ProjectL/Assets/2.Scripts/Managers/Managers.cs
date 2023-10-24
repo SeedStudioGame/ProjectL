@@ -33,5 +33,6 @@ public class Managers : MonoBehaviour
         Data = Init<DataManager>();
         UI = Init<UIManager>();
         Audio = Init<AudioManager>();
+        Scene= Init<SceneManager>();
     }
 }
