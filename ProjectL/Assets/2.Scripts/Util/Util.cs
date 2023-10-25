@@ -69,4 +69,16 @@ public static class Util
     {
         return _root.gameObject;
     }
+
+    public static T Load<T>(string path) where T : UnityEngine.Object
+    {
+        T go = Resources.Load<T>(path);
+        return go;
+    }
+
+    public static T[] Loads<T>(string path) where T : UnityEngine.Object
+    {
+        T[] go = Resources.LoadAll<T>(path);
+        return go;
+    }
 }

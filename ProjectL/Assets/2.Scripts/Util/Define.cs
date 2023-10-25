@@ -27,4 +27,14 @@ public class Define
     {
         Awake, Load, Title, Lobby
     }
+
+    public enum BGM
+    {
+
+    }
+
+    public enum SFX
+    {
+
+    }
 }
