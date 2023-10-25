@@ -23,6 +23,7 @@ public class AudioManager : ManagerBase
         _isSilence = false;
 
         _bgmSource = gameObject.AddComponent<AudioSource>();
+        _bgmSource.loop = true;
         _sfxSources.Clear();
         _clips.Clear();
 
@@ -65,9 +66,12 @@ public class AudioManager : ManagerBase
         }
 
         AudioObject go = new AudioObject();
+
         go._object = new GameObject().transform;
         go._object.name = "sfx" + _sfxSources.Count;
+
         go._audio = Util.GetOrAddComponent<AudioSource>(go._object.gameObject);
+        go._audio.loop = false;
 
         return go;
     }
