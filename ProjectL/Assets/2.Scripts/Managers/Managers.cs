@@ -12,6 +12,7 @@ public class Managers : MonoBehaviour
     public static SceneManager Scene;
     public static UIManager UI;
     public static AudioManager Audio;
+    public static BattleDataManager BattleData;
 
     private T Init<T>() where T : ManagerBase
     {
@@ -33,6 +34,7 @@ public class Managers : MonoBehaviour
         Data = Init<DataManager>();
         UI = Init<UIManager>();
         Audio = Init<AudioManager>();
-        Scene= Init<SceneManager>();
+        Scene = Init<SceneManager>();
+        BattleData = Init<BattleDataManager>();
     }
 }
