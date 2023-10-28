@@ -8,4 +8,16 @@ public class BattleDataManager : ManagerBase
     {
 
     }
+
+    private BattleData _data;
+
+    public void SetData()
+    {
+
+    }
+
+    public BattleData GetData()
+    {
+        return _data;
+    }
 }
