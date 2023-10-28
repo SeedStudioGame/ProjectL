@@ -8,7 +8,6 @@ public class LoadScene : SceneBase
     private float _speed;
     private Slider loadBar;
 
-
     private void Start()
     {
         Init();

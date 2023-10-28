@@ -11,7 +11,9 @@ public class BattlerBase : MonoBehaviour
     public int maxSpeed;
     public int minSpeed;
 
-    public void BattlerInit(int maxSpeed, int minSpeed, int firstAttack)
+    public int nowCardLen;
+
+    public void BattlerInit(int maxSpeed, int minSpeed, int firstAttack, int nowCardLen)
     {
         this.maxSpeed = maxSpeed;
         this.minSpeed = minSpeed;
@@ -27,4 +29,7 @@ public class BattlerBase : MonoBehaviour
     {
         return Random.Range(minSpeed, maxSpeed);
     }
+
+
+
 }
