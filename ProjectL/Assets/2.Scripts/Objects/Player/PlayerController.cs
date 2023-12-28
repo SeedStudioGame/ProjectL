@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    private float _h, _v, _moveSpeeed, _jumpPower, _fallPower;
+    private float _h, _moveSpeeed, _jumpPower, _fallPower;
     private Vector3 _dir, _velovity, _force, _forceImpulse, _preDir;
 
     private Rigidbody _rigid;
