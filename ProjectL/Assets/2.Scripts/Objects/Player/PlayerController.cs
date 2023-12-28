@@ -14,25 +14,21 @@ public class PlayerController : MonoBehaviour
     private Ray _wallRay, _flatRay;
     private RaycastHit _hit;
 
-    [SerializeField]
     private bool _isJump;
     private bool _downJumpKey, _isOnFloor;
     private float _jumpH, _jumpLimitH, _jumpMinH, _fallLimitV;
 
     private bool _onAir, _isFall;
 
-    [SerializeField]
     private bool _isHeading;
 
-    [SerializeField]
     private bool _downDashKey, _isDash;
     private float _dashTime, _dashTimer, _dashPower;
-    [SerializeField]
     private float _dashW, _dashLimitW;
-    [SerializeField]
     private Vector3 _dashDir;
 
-    private Flat _flat;
+    private Flat _flat, _unflat;
+    private bool _down;
 
     private void Start()
     {
@@ -49,8 +45,8 @@ public class PlayerController : MonoBehaviour
     private void SetJumpInfo()
     {
         _jumpPower = 15;
-        _fallPower = 3;
-        _jumpLimitH = 3;
+        _fallPower = 6;
+        _jumpLimitH = 2.7f;
         _jumpMinH = 0.1f;
         _fallLimitV = -10f;
         _isJump = false;
@@ -83,6 +79,7 @@ public class PlayerController : MonoBehaviour
 
         SetDir();
 
+        OnPlatform();
         OnAir();
         Jump();
         Dash();
@@ -96,6 +93,7 @@ public class PlayerController : MonoBehaviour
         _h = Input.GetAxisRaw("Horizontal");
         _downJumpKey = Input.GetKeyDown(KeyCode.Space);
         _downDashKey = Input.GetMouseButtonDown(1);
+        _down = Input.GetKeyDown(KeyCode.S);
     }
 
     private void SetDir()
@@ -114,6 +112,16 @@ public class PlayerController : MonoBehaviour
             return;
 
         Fall();
+    }
+
+    private void OnPlatform()
+    {
+        if (_down && _flat)
+        {
+            _unflat = _flat;
+            _unflat.OffFlat();
+            _flat = null;
+        }
     }
 
     private void Fall()
@@ -174,7 +182,6 @@ public class PlayerController : MonoBehaviour
         if(_isDash)
         {
             float dist = _dashW + (_dashDir.x * _dashLimitW) - transform.position.x;
-            Debug.Log(dist);
             if (dist <= 0.5f && dist >= -0.5f)
             {
                 _velovity.x = 0;
@@ -263,7 +270,11 @@ public class PlayerController : MonoBehaviour
     {
         if (_flat)
         {
-            _flat.GetComponent<Flat>().OnFlat();
+            if (_unflat != _flat)
+            {
+                _flat.GetComponent<Flat>().OnFlat();
+                _unflat = null;
+            }
         }
     }
 
@@ -329,7 +340,6 @@ public class PlayerController : MonoBehaviour
     private void OnHeading()
     {
         _isHeading = true;
-        //_velovity.y = 0;
     }
 
     private void OnLand()
@@ -337,9 +347,9 @@ public class PlayerController : MonoBehaviour
         if (_rigid.velocity.y > 0)
             return;
 
-        //if (_onAir)
-            _velovity.y = -1;
+        _velovity.y = -1;
 
+        _unflat = null;
         _isOnFloor = true;
         _isFall = false;
         _onAir = false;
