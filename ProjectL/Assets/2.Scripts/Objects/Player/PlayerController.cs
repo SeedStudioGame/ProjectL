@@ -1,11 +1,14 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 public class PlayerController : MonoBehaviour
 {
     private float _h, _moveSpeeed, _jumpPower, _fallPower;
+    private bool _isFrontWall;
     private Vector3 _dir, _velovity, _force, _forceImpulse, _preDir;
 
     private Rigidbody _rigid;
@@ -15,19 +18,20 @@ public class PlayerController : MonoBehaviour
     private RaycastHit _hit;
 
     private bool _isJump;
-    private bool _downJumpKey, _isOnFloor;
+    private int _jumpCount, _jumpCountLimt;
+    private bool _downJumpKey, _isOnFloor, _jumpOnMinH;
     private float _jumpH, _jumpLimitH, _jumpMinH, _fallLimitV;
 
     private bool _onAir, _isFall;
 
     private bool _isHeading;
 
-    private bool _downDashKey, _isDash;
+    private bool _downDashKey, _isDash, _dashStoped;
     private float _dashTime, _dashTimer, _dashPower;
-    private float _dashW, _dashLimitW;
-    private Vector3 _dashDir;
+    private float _dashLimitDist;
+    private Vector3 _dashDir, _dashPos;
 
-    private Flat _flat, _unflat;
+    private Flat _flat;
     private bool _down;
 
     private void Start()
@@ -48,8 +52,11 @@ public class PlayerController : MonoBehaviour
         _fallPower = 6;
         _jumpLimitH = 2.7f;
         _jumpMinH = 0.1f;
+        _jumpOnMinH = false;
         _fallLimitV = -10f;
         _isJump = false;
+        _jumpCount = 0;
+        _jumpCountLimt = 2;
     }
 
     private void SetDashInfo()
@@ -57,8 +64,9 @@ public class PlayerController : MonoBehaviour
         _dashTime = 3;
         _dashTimer = 0;
         _isDash = false;
+        _dashStoped = true;
         _dashPower = 60f;
-        _dashLimitW = 5;
+        _dashLimitDist = 5;
     }
 
     private void SetObjectParameters()
@@ -93,6 +101,12 @@ public class PlayerController : MonoBehaviour
         _h = Input.GetAxisRaw("Horizontal");
         _downJumpKey = Input.GetKeyDown(KeyCode.Space);
         _downDashKey = Input.GetMouseButtonDown(1);
+        if(_downDashKey)
+        {
+            _dashDir = Camera.main.ScreenToWorldPoint(Input.mousePosition) - transform.position;
+            _dashDir.z = 0;
+            _dashDir.Normalize();
+        }
         _down = Input.GetKeyDown(KeyCode.S);
     }
 
@@ -116,11 +130,9 @@ public class PlayerController : MonoBehaviour
 
     private void OnPlatform()
     {
-        if (_down && _flat)
+        if (_down)
         {
-            _unflat = _flat;
-            _unflat.OffFlat();
-            _flat = null;
+            UnFlat();
         }
     }
 
@@ -141,15 +153,34 @@ public class PlayerController : MonoBehaviour
         {
             if (_isHeading)
                 _isJump = false;
+
             JumpHeightLimit();
+            JumpHeightMin();
         }
-        else
+        
+        if(_jumpCount < _jumpCountLimt)
         {
-            if(_downJumpKey && _isOnFloor)
+            if(_downJumpKey)
             {
-                _jumpH = transform.position.y;
-                _forceImpulse += Vector3.up * _jumpPower;
-                _isJump = true;
+                if(_jumpCount == 0)
+                {
+                    if(_isOnFloor)
+                    {
+                        _jumpOnMinH = false;
+                        _jumpH = transform.position.y;
+                        _forceImpulse += Vector3.up * _jumpPower;
+                        _isJump = true;
+                        _jumpCount++;
+                    }
+                }
+                else
+                {
+                    _velovity.y = 0;
+                    _jumpH = transform.position.y;
+                    _forceImpulse += Vector3.up * _jumpPower;
+                    _isJump = true;
+                    _jumpCount++;
+                }
             }
         }
     }
@@ -163,9 +194,23 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    private void JumpHeightMin()
+    {
+        if (_jumpH + _jumpMinH <= transform.position.y)
+        {
+            _jumpOnMinH = true;
+        }
+    }
+
     private void Move()
     {
-        transform.position += _dir.normalized * _moveSpeeed * Time.deltaTime;
+        if(IsCanMove())
+            transform.position += _dir.normalized * _moveSpeeed * Time.deltaTime;
+    }
+
+    private bool IsCanMove()
+    {
+        return (_dashStoped && !_isFrontWall);
     }
 
     private void Dash()
@@ -173,18 +218,20 @@ public class PlayerController : MonoBehaviour
         if(_downDashKey && !_isDash)
         {
             _isDash = true;
+            _dashStoped = false;
             _dashTimer = _dashTime;
-            _dashDir = _preDir;
             _forceImpulse += _dashDir * _dashPower;
-            _dashW = transform.position.x;
+            _dashPos = transform.position;
+            UnFlat();
         }
 
-        if(_isDash)
+        if(_isDash && !_dashStoped)
         {
-            float dist = _dashW + (_dashDir.x * _dashLimitW) - transform.position.x;
-            if (dist <= 0.5f && dist >= -0.5f)
+            float dist = Vector3.Distance(_dashPos, transform.position);
+            if (dist >= _dashLimitDist)
             {
-                _velovity.x = 0;
+                _dashStoped = true;
+                _velovity = Vector3.zero;
             }
         }
 
@@ -229,13 +276,11 @@ public class PlayerController : MonoBehaviour
 
     private void CheckOnFlat()
     {
-        if (_isOnFloor)
+        if (_isOnFloor || !_dashStoped)
             return;
 
         _wallRay.origin = _floorRayPoint.position;
         _wallRay.direction = Vector3.down;
-
-        Debug.DrawLine(_floorRayPoint.position, _wallRay.origin + (Vector3.down * 0.2f), Color.red);
 
         _wallRay.origin = _floorRayPoint.position + (Vector3.right * -0.3f);
         if (Physics.Raycast(_wallRay, out _hit, 0.2f, 1 << 7))
@@ -270,11 +315,7 @@ public class PlayerController : MonoBehaviour
     {
         if (_flat)
         {
-            if (_unflat != _flat)
-            {
-                _flat.GetComponent<Flat>().OnFlat();
-                _unflat = null;
-            }
+            _flat.GetComponent<Flat>().OnFlat();
         }
     }
 
@@ -284,6 +325,14 @@ public class PlayerController : MonoBehaviour
             _flat.GetComponent<Flat>().OffFlat();
         
         _flat = null;
+    }
+
+    private void UnFlat()
+    {
+        if (_flat)
+        {
+            _flat.UnFlat();
+        }
     }
 
     private void CheckBottomFloor()
@@ -317,13 +366,13 @@ public class PlayerController : MonoBehaviour
 
     private void CheckFrontWall()
     {
+        _isFrontWall = false;
         _wallRay.origin = _floorRayPoint.position;
         _wallRay.direction = Vector3.right * _h;
 
         if (Physics.Raycast(_wallRay, out _hit, 0.55f, 1 << 6))
         {
-            _h = 0;
-            _velovity.x = 0;
+            FrontWall();
             return;
         }
 
@@ -331,10 +380,22 @@ public class PlayerController : MonoBehaviour
 
         if (Physics.Raycast(_wallRay, out _hit, 0.55f, 1 << 6))
         {
-            _h = 0;
-            _velovity.x = 0;
+            FrontWall();
             return;
         }
+    }
+
+    private void FrontWall()
+    {
+        if (_h > 0 && _velovity.x > 0)
+        {
+            _velovity.x = 0;
+        }
+        if (_h < 0 && _velovity.x < 0)
+        {
+            _velovity.x = 0;
+        }
+        _isFrontWall = true;
     }
 
     private void OnHeading()
@@ -347,9 +408,11 @@ public class PlayerController : MonoBehaviour
         if (_rigid.velocity.y > 0)
             return;
 
+        if(_jumpOnMinH)
+            _jumpCount = 0;
+
         _velovity.y = -1;
 
-        _unflat = null;
         _isOnFloor = true;
         _isFall = false;
         _onAir = false;
