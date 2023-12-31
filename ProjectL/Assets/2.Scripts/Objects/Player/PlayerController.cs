@@ -1,15 +1,13 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using TMPro;
 using UnityEngine;
-using UnityEngine.Rendering;
 
 public class PlayerController : MonoBehaviour
 {
     private float _h, _moveSpeeed, _jumpPower, _fallPower;
     private bool _isFrontWall;
-    private Vector3 _dir, _velovity, _force, _forceImpulse, _preDir;
+    private Vector3 _dir, _velovity, _force, _forceImpulse, _forceForce, _preDir;
 
     private Rigidbody _rigid;
 
@@ -37,7 +35,7 @@ public class PlayerController : MonoBehaviour
     private void Start()
     {
         _preDir = Vector3.right;
-        _moveSpeeed = 7f;
+        _moveSpeeed = 10f;
         SetJumpInfo();
         SetDashInfo();
 
@@ -48,12 +46,12 @@ public class PlayerController : MonoBehaviour
 
     private void SetJumpInfo()
     {
-        _jumpPower = 15;
-        _fallPower = 6;
+        _jumpPower = 20;
+        _fallPower = 8;
         _jumpLimitH = 2.7f;
         _jumpMinH = 0.1f;
         _jumpOnMinH = false;
-        _fallLimitV = -10f;
+        _fallLimitV = -18f;
         _isJump = false;
         _jumpCount = 0;
         _jumpCountLimt = 2;
@@ -66,7 +64,7 @@ public class PlayerController : MonoBehaviour
         _isDash = false;
         _dashStoped = true;
         _dashPower = 60f;
-        _dashLimitDist = 5;
+        _dashLimitDist = 3.5f;
     }
 
     private void SetObjectParameters()
@@ -190,6 +188,8 @@ public class PlayerController : MonoBehaviour
         if (_jumpH + _jumpLimitH <= transform.position.y)
         {
             _velovity.y = 1;
+            //_forceForce += Vector3.down * 10;
+            //_forceForce += Vector3.down * 10;
             _isJump = false;
         }
     }
@@ -436,6 +436,12 @@ public class PlayerController : MonoBehaviour
         {
             _rigid.AddForce(_forceImpulse, ForceMode.Impulse);
             _forceImpulse = Vector3.zero;
+        }
+
+        if (_forceForce != Vector3.zero)
+        {
+            _rigid.AddForce(_forceForce, ForceMode.Force);
+            _forceForce = Vector3.zero;
         }
     }
 }
