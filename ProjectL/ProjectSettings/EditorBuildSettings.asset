@@ -6,6 +6,6 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/4.Scenes/L_Re/Movement.unity
+    path: Assets/4.Scenes/GKI/Movement.unity
     guid: 5dd4f5b3cb2a1bc4d97f62b8e17a6cec
   m_configObjects: {}
