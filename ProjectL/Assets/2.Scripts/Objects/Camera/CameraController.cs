@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerCameraController : MonoBehaviour
+public class CameraController : MonoBehaviour
 {
     [SerializeField]
     private Transform _player;
@@ -12,7 +12,7 @@ public class PlayerCameraController : MonoBehaviour
 
     private void Start()
     {
-        _weight = transform.position;
+        _weight = transform.position - _player.position;
     }
 
     private void Update()

@@ -72,8 +72,8 @@ public class PlayerController : MonoBehaviour
         _floorRayPoint = transform.Find("FloorRayPoint");
     }
 
-    private void Update()
-    {
+    /*
+     * 
         _velovity = _rigid.velocity;
 
         KeyInput();
@@ -90,6 +90,36 @@ public class PlayerController : MonoBehaviour
         Jump();
         Dash();
         Move();
+
+        AddForce();
+     *
+     */
+
+    private void FixedUpdate()
+    {
+        KeyInput();
+
+        CheckFrontWall();
+
+        SetDir();
+
+        OnPlatform();
+        Move();
+    }
+
+    private void Update()
+    {
+        KeyInput();
+
+        _velovity = _rigid.velocity;
+
+        CheckOnFloor();
+        CheckOnFlat();
+        CheckBottomFloor();
+
+        OnAir();
+        Jump();
+        Dash();
 
         AddForce();
     }
@@ -188,8 +218,6 @@ public class PlayerController : MonoBehaviour
         if (_jumpH + _jumpLimitH <= transform.position.y)
         {
             _velovity.y = 1;
-            //_forceForce += Vector3.down * 10;
-            //_forceForce += Vector3.down * 10;
             _isJump = false;
         }
     }
@@ -279,33 +307,41 @@ public class PlayerController : MonoBehaviour
         if (_isOnFloor || !_dashStoped)
             return;
 
+        float velocity = _velovity.y;
+        if(velocity < -2)
+        {
+            velocity = -2;
+        }
         _wallRay.origin = _floorRayPoint.position;
         _wallRay.direction = Vector3.down;
 
         _wallRay.origin = _floorRayPoint.position + (Vector3.right * -0.3f);
-        if (Physics.Raycast(_wallRay, out _hit, 0.2f, 1 << 7))
+        if (Physics.Raycast(_wallRay, out _hit, 0.4f, 1 << 7))
         {
             _flat = _hit.transform.GetComponent<Flat>();
             OnFlat();
             OnLand();
+            _velovity.y = velocity;
             return;
         }
 
         _wallRay.origin = _floorRayPoint.position;
-        if (Physics.Raycast(_wallRay, out _hit, 0.2f, 1 << 7))
+        if (Physics.Raycast(_wallRay, out _hit, 0.4f, 1 << 7))
         {
             _flat = _hit.transform.GetComponent<Flat>();
             OnFlat();
             OnLand();
+            _velovity.y = velocity;
             return;
         }
 
         _wallRay.origin = _floorRayPoint.position + (Vector3.right * 0.3f);
-        if (Physics.Raycast(_wallRay, out _hit, 0.2f, 1 << 7))
+        if (Physics.Raycast(_wallRay, out _hit, 0.4f, 1 << 7))
         {
             _flat = _hit.transform.GetComponent<Flat>();
             OnFlat();
             OnLand();
+            _velovity.y = velocity;
             return;
         }
         OffFlat();
